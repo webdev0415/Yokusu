@@ -1,0 +1,46 @@
+version: "3.7"
+
+services:
+  nginx-frontend:
+    image: nginx:1.17-alpine
+    labels:
+      - traefik.backend=nginx-frontend
+      - traefik.subdomains.frontend.rule=HostRegexp:www.fantasycycling.dev
+      - traefik.frontend.passHostHeader=true
+      - traefik.domain=fantasycycling.dev
+      - traefik.enable=true
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/fantasy-cycling-frontend.conf:/etc/nginx/nginx.conf
+      - ./docker/logs/nginx:/var/log/nginx
+    depends_on:
+      - nuxt
+
+  nuxt:
+    build:
+      context: .
+      dockerfile: docker/nuxt.Dockerfile
+    restart: always
+    volumes:
+      - ./src:/app
+
+  reverse-proxy-frontend:
+    image: traefik:v1.7
+    command:
+      - --api
+      - --accesslog
+      - --loglevel=INFO
+      - --docker
+      - --docker.watch
+      - --docker.exposedByDefault=false
+    environment:
+      CF_API_EMAIL: "${CF_API_EMAIL}"
+      CF_API_KEY: "${CF_API_KEY}"
+    ports:
+      - "127.0.0.4:80:80"
+      - "127.0.0.4:443:443"
+      - "127.0.0.4:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/traefik/traefik.toml:/traefik.toml
+      - ./docker/traefik/acme.json:/acme.json

@@ -1,0 +1,49 @@
+// Import Bulma's core
+@import "~bulma/sass/utilities/_all";
+
+// Set your colors
+$primary: #1565C0;
+$primary-invert: findColorInvert($primary);
+
+$yosoku: #FBC02D;
+$yosoku-invert: findColorInvert($yosoku);
+
+$tdf: #FBC02D;
+$tdf-invert: findColorInvert($yosoku);
+
+$gro: #FFC0CB;
+$gro-invert: findColorInvert($gro);
+
+$lav: #da291c;
+$lav-invert: findColorInvert($lav);
+
+$twitter: #4099FF;
+$twitter-invert: findColorInvert($twitter);
+
+// Setup $colors to use as bulma classes (e.g. 'is-twitter')
+$colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "light": ($light, $light-invert),
+    "dark": ($dark, $dark-invert),
+    "primary": ($primary, $primary-invert),
+    "info": ($info, $info-invert),
+    "success": ($success, $success-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $danger-invert),
+    "twitter": ($twitter, $twitter-invert),
+    "yosoku": ($yosoku, $yosoku-invert),
+    "tdf": ($tdf, $tdf-invert),
+    "gro": ($gro, $gro-invert),
+    "lav": ($lav, $lav-invert)
+);
+
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+// Sections
+$section-padding: 1.5rem 1rem !default;
+$section-padding-medium: 3rem 1rem !default;
+$section-padding-large: 6rem 1rem !default;

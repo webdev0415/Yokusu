@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../bases/
+
+namePrefix: fcf-
+namespace: fcf-testing
+
+commonLabels:
+  app: fantasy-cycling-frontend
+
+secretGenerator:
+  - files:
+      - files/star-tourzomer-com/tls.crt
+      - files/star-tourzomer-com/tls.key
+    name: star-tourzomer-com
+    type: kubernetes.io/tls
+  - envs:
+      - files/backend-app.env
+    name: backend-app-env
+
+patchesStrategicMerge:
+  - patches/backend/ingress.yaml

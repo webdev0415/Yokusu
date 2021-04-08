@@ -1,0 +1,60 @@
+stages:
+  - build
+  - test
+  - deploy
+
+include:
+  - local: .gitlab-ci/fcf-k8s-deploy.yml
+
+variables:
+  IMAGE_NAME: "eu.gcr.io/yosoku-games/fantasy-cycling-frontend"
+
+build:image-test:
+  stage: build
+  image: docker:stable
+  services:
+    - docker:dind
+  before_script:
+    - echo "${GCLOUD_SERVICE_KEY}" | docker login -u _json_key --password-stdin https://eu.gcr.io
+  script:
+    - docker pull ${IMAGE_NAME}:${CACHE_TAG} || true
+    - docker build --file docker/nuxt.Dockerfile --cache-from ${IMAGE_NAME}:${CACHE_TAG} .
+  variables:
+    CACHE_TAG: "develop"
+  except:
+    refs:
+      - develop
+      - master
+
+build:image-real:
+  stage: build
+  image: docker:stable
+  services:
+    - docker:dind
+  before_script:
+    - echo "${GCLOUD_SERVICE_KEY}" | docker login -u _json_key --password-stdin https://eu.gcr.io
+  script:
+    - docker pull ${IMAGE_NAME}:${CACHE_TAG} || true
+    - docker build --file docker/nuxt.Dockerfile --cache-from ${IMAGE_NAME}:${CACHE_TAG} --tag ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG} --tag ${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA} .
+    - docker push ${IMAGE_NAME}:${CI_COMMIT_REF_SLUG}
+    - docker push ${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}
+  variables:
+    CACHE_TAG: "${CI_COMMIT_REF_SLUG}"
+  only:
+    refs:
+      - develop
+      - master
+
+deploy:k8s-production:
+ extends: .fcf-k8s-deploy
+ script:
+   - pushd ${KUSTOMIZE_BASE} && kustomize edit set image ${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA} && popd
+   - mv "${STAR_TOURZOMER_COM_KEY}" "${KUSTOMIZE_BASE}/files/star-tourzomer-com/tls.key"
+   - mv "${PRODUCTION_BACKEND_APP_ENV}" "${KUSTOMIZE_BASE}/files/backend-app.env"
+   - kustomize build ${KUSTOMIZE_BASE} > manifest.yaml
+   - kubectl apply -f manifest.yaml --prune --selector ${K8S_PRUNE_SELECTOR}
+ variables:
+   KUSTOMIZE_BASE: k8s/fcf/production
+ only:
+   refs:
+     - master

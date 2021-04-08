@@ -1,0 +1,70 @@
+html {
+  background-color: $light;
+}
+
+@media screen and (max-width: 768px) {
+  .modal .animation-content {
+    width: 90%;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .navbar.is-spaced {
+    padding: 0.4rem 0.8rem !important;
+  }
+}
+
+.no-padding-tab-content {
+  .tab-content {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+.table-shadow {
+  .table-wrapper {
+    box-shadow: $box-shadow;
+  }
+}
+
+.results {
+  margin-bottom: 0px !important;
+  ul {
+    border: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    li {
+      a {
+        border: 0px !important;
+      }
+    }
+    li.is-active {
+      box-shadow: $box-shadow;
+    }
+  }
+  section {
+    padding: 0px !important;
+  }
+}
+
+.th-right {
+  justify-content: flex-end;
+  text-align: center;
+  display: flex;
+}
+
+.hide-burger {
+  .navbar-brand {
+    .burger {
+      display: none;
+    }
+  }
+}
+
+.has-text-underline {
+  text-decoration: underline;
+}
+
+.is-withdrawn {
+  text-decoration: line-through;
+}

@@ -1,0 +1,36 @@
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+.env
+
+# IDE and editor specific files #
+#################################
+/gitmanage
+/nbproject
+.idea
+/.project
+/.buildpath
+/.settings/
+
+# Local setup #
+###############
+/docker/traefik/acme.json
+/docker/logs/*
+/k8s/fcf/*/files/backend-app.env
+/k8s/fcf/*/files/*/tls.key
+
+# Firebase #
+############
+.firebase
+node_modules
+functions/nuxt
+functions/dist/
+functions/nuxt.config.json
+public

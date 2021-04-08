@@ -1,0 +1,24 @@
+.fcf-k8s-deploy:
+  stage: deploy
+  image: google/cloud-sdk:alpine
+  before_script:
+    - curl -L https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VER}/bin/linux/amd64/kubectl -o kubectl && chmod +x kubectl
+    - curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VER}/kustomize_v${KUSTOMIZE_VER}_linux_amd64.tar.gz | tar xvz && chmod +x kustomize
+    - echo ${GCLOUD_SERVICE_KEY} > key.json
+    - gcloud auth activate-service-account --key-file=key.json
+    - gcloud config set project ${GOOGLE_PROJECT}
+    - gcloud config set container/cluster ${GOOGLE_CLUSTER}
+    - gcloud config set compute/zone ${GOOGLE_ZONE}
+    - gcloud container clusters get-credentials ${GOOGLE_CLUSTER} --zone ${GOOGLE_ZONE}
+    - export PATH="${PATH}:$(pwd)"
+    - kustomize version
+    - kubectl version
+    - kubectl cluster-info
+  variables:
+    KUBECTL_VER: 1.17.14
+    KUSTOMIZE_VER: 3.8.8
+    GOOGLE_PROJECT: yosoku-games
+    GOOGLE_CLUSTER: football-fantasy
+    GOOGLE_ZONE: europe-west4-c
+    KUSTOMIZE_BASE: k8s/tbd
+    K8S_PRUNE_SELECTOR: app=fantasy-cycling-frontend

@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+configMapGenerator:
+  - name: nginx-config
+    files:
+      - files/nginx.conf
+
+resources:
+  - resources/backend/deployment.yaml
+  - resources/backend/hpa.yaml
+  - resources/backend/ingress.yaml
+  - resources/backend/service.yaml
+
+images:
+  - name: eu.gcr.io/yosoku-games/fantasy-cycling-frontend
+    newTag: develop

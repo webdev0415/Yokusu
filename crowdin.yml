@@ -1,0 +1,4 @@
+files:
+  - source: /src/locales/en-US.json
+    translation: /src/locales/%locale%.json
+    update_option: update_without_changes
